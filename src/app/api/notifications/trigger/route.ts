@@ -54,6 +54,8 @@ export async function POST(request: Request) {
           title,
           body: bodyText,
           icon: `${baseUrl}/icon-192x192.png`,
+          // @ts-expect-error - 'badge' is a valid Web Push attribute, even though Pusher SDK types are outdated here
+          badge: `${baseUrl}/badge.png`,
           deep_link: `${baseUrl}/schedule`,
         },
       },
