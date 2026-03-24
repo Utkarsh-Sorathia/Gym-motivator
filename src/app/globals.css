@@ -1,26 +1,182 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-color: #0d0e12;
+  --bg-surface: #181920;
+  --bg-surface-hover: #22252c;
+  --primary: #c2ff00; /* Neon Lime often used in fitness */
+  --primary-hover: #a1d600;
+  --text-main: #ffffff;
+  --text-muted: #8c8f99;
+  --border-color: #2b2e38;
+  --success: #00e676;
+  --error: #ff3b30;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+}
+
+/* Base Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.heading-xl {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.heading-lg {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #c2ff00 0%, #00e676 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Outfit', sans-serif;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(194, 255, 0, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface);
+  border-color: var(--text-muted);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-color: rgba(194, 255, 0, 0.2);
+}
+
+/* Switch UI */
+.switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+  background-color: #000;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease forwards;
 }

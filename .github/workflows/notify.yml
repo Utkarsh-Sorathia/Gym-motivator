@@ -1,0 +1,49 @@
+name: Daily Gym Motivation Triggers
+
+on:
+  schedule:
+    # 09:00 AM IST (Morning Grind) -> 03:30 UTC
+    - cron: '30 3 * * *'
+    # 06:00 PM IST (Pre-workout) -> 12:30 UTC
+    - cron: '30 12 * * *'
+    # 11:00 PM IST (Evening reflection) -> 17:30 UTC
+    - cron: '30 17 * * *'
+  workflow_dispatch:
+    inputs:
+      eventType:
+        description: 'Event Type to Trigger (morning, workout, evening)'
+        required: true
+        default: 'morning'
+
+jobs:
+  trigger_notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine Event Type (Scheduled)
+        if: github.event_name == 'schedule'
+        id: eventType
+        run: |
+          if [ "${{ github.event.schedule }}" == "30 3 * * *" ]; then
+            echo "type=morning" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" == "30 12 * * *" ]; then
+            echo "type=workout" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" == "30 17 * * *" ]; then
+            echo "type=evening" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Determine Event Type (Manual Dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        id: manualType
+        run: echo "type=${{ github.event.inputs.eventType }}" >> $GITHUB_OUTPUT
+
+      - name: Trigger Push API
+        env:
+          EVENT_TYPE: ${{ steps.eventType.outputs.type || steps.manualType.outputs.type }}
+          API_URL: ${{ secrets.PRODUCTION_API_URL }} # e.g. https://your-gym-app.vercel.app/api/notifications/trigger
+          APP_SECRET: ${{ secrets.NOTIFICATION_SECRET }}
+        run: |
+          echo "Triggering Notification for: $EVENT_TYPE"
+          curl -X POST "$API_URL" \
+          -H "Content-Type: application/json" \
+          -d "{\"eventType\":\"$EVENT_TYPE\", \"secret\":\"$APP_SECRET\"}" \
+          --fail || exit 1

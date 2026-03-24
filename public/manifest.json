@@ -1,0 +1,21 @@
+{
+  "name": "Gym Motivator",
+  "short_name": "Motivator",
+  "description": "Daily motivation and workout push notifications to keep you on track.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0e12",
+  "theme_color": "#c2ff00",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
