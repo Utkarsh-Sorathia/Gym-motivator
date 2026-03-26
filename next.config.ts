@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Allow hot-reloading (HMR) websocket connections from your local mobile phone via network
+  allowedDevOrigins: ['192.168.1.20'],
 };
 
 export default nextConfig;

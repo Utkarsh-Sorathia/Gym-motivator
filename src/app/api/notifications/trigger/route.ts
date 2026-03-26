@@ -54,15 +54,19 @@ export async function POST(request: Request) {
           title,
           body: bodyText,
           icon: `${baseUrl}/icon-192x192.png`,
-          // @ts-expect-error - 'badge' is a valid Web Push attribute, even though Pusher SDK types are outdated here
+          // @ts-expect-error - 'badge' and 'vibrate' are valid Web Push attributes
           badge: `${baseUrl}/badge.png`,
           deep_link: `${baseUrl}/schedule`,
+          // A gym-style heavy vibration pattern: [vibrate, pause, vibrate, pause, vibrate]
+          vibrate: [300, 100, 400, 100, 400],
         },
       },
       fcm: {
         notification: {
           title,
           body: bodyText,
+          // Requests Android OS to play the default notification sound
+          sound: 'default'
         }
       },
       apns: {
@@ -70,7 +74,9 @@ export async function POST(request: Request) {
           alert: {
             title,
             body: bodyText,
-          }
+          },
+          // Requests iOS to play the default notification sound
+          sound: 'default'
         }
       }
     });

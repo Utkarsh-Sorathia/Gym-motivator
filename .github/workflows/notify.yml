@@ -5,7 +5,8 @@ on:
     # 09:00 AM IST (Morning Grind) -> 03:30 UTC
     - cron: '30 3 * * *'
     # 06:00 PM IST (Pre-workout) -> 12:30 UTC
-    - cron: '30 12 * * *'
+    # Note: Shifted to 11:40 UTC (~5:10 PM IST) due to GitHub Actions' known 1hr delay
+    - cron: '40 11 * * *'
     # 11:00 PM IST (Evening reflection) -> 17:30 UTC
     - cron: '30 17 * * *'
   workflow_dispatch:
@@ -25,7 +26,7 @@ jobs:
         run: |
           if [ "${{ github.event.schedule }}" == "30 3 * * *" ]; then
             echo "type=morning" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event.schedule }}" == "30 12 * * *" ]; then
+          elif [ "${{ github.event.schedule }}" == "40 11 * * *" ]; then
             echo "type=workout" >> $GITHUB_OUTPUT
           elif [ "${{ github.event.schedule }}" == "30 17 * * *" ]; then
             echo "type=evening" >> $GITHUB_OUTPUT
