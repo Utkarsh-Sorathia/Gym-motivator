@@ -9,7 +9,7 @@ export default function Home() {
   const [notifications, setNotifications] = useState({
     morning: true,
     workout: true,
-    evening: false
+    evening: true
   });
 
   const [workoutDates, setWorkoutDates] = useState<string[]>([]);
