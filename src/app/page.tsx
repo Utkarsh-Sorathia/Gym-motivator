@@ -118,7 +118,7 @@ export default function Home() {
       const response = await fetch('/api/notifications/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventType: 'workout', secret: 'my_secure_github_action_secret' })
+        body: JSON.stringify({ eventType: 'workout', secret: process.env.NEXT_PUBLIC_NOTIFICATION_SECRET })
       });
       if (!response.ok) throw new Error('Failed to trigger');
       console.log('Test notification sent!');

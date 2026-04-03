@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const { eventType, secret } = body;
 
     // Secure the webhook endpoint for external cron jobs like GitHub Actions.
-    if (secret !== process.env.NOTIFICATION_SECRET) {
+    if (secret !== process.env.NEXT_PUBLIC_NOTIFICATION_SECRET) {
       return NextResponse.json({ error: 'Unauthorized webhook call' }, { status: 401 });
     }
 
