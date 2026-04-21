@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { usePusher } from '@/hooks/usePusher';
+import confetti from 'canvas-confetti';
+import Heatmap from '@/components/Heatmap';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -78,6 +80,34 @@ export default function Home() {
       setWorkoutDates(newDates);
       window.localStorage.setItem('gym_workout_dates', JSON.stringify(newDates));
       calculateAndSetStreak(newDates);
+
+      // Trigger celebration!
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#c2ff00', '#ffffff', '#00e676']
+      });
+    }
+  };
+
+  const toggleWorkoutDate = (date: string) => {
+    const newDates = workoutDates.includes(date)
+      ? workoutDates.filter(d => d !== date)
+      : [...workoutDates, date];
+    
+    setWorkoutDates(newDates);
+    window.localStorage.setItem('gym_workout_dates', JSON.stringify(newDates));
+    calculateAndSetStreak(newDates);
+
+    // If we're adding a date, show a mini celebration
+    if (!workoutDates.includes(date)) {
+      confetti({
+        particleCount: 30,
+        spread: 40,
+        origin: { y: 0.8 },
+        colors: ['#c2ff00', '#ffffff']
+      });
     }
   };
 
@@ -234,39 +264,74 @@ export default function Home() {
         </article>
       </section>
 
-      <section className="mt-10 lg:mt-20 bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle text-center animate-fade-in" style={{ animationDelay: '0.4s' }}>
-        <h2 className="text-2xl sm:text-4xl font-semibold mb-4 text-white tracking-tight">Progress Tracking System</h2>
-        <div className="flex justify-center items-center mb-4 sm:mb-6">
-           <div className="bg-surface-hover rounded-2xl px-5 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 shadow-xl border border-border-subtle/50">
-             <div className="text-4xl sm:text-5xl font-display font-extrabold text-primary">{streak}</div>
-             <div className="text-base sm:text-lg text-text-muted font-medium text-left">
-               <div>Day</div>
-               <div>Streak</div>
-             </div>
-           </div>
-        </div>
-        <p className="text-text-muted text-sm sm:text-base max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed">
-          {streak > 0 
-            ? `Your history shows a ${streak}-day streak! Don't let the fire die out. The difference between who you are and who you want to be is what you do today.`
-            : `You don't have an active streak right now. Log a workout today to light the fire!`}
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          {!hasLoggedToday ? (
-            <button 
-              onClick={logWorkoutForToday} 
-              className="bg-primary text-black px-8 py-3 rounded-full font-semibold transition-all duration-200 hover:bg-primary-hover hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(194,255,0,0.3)] shadow-lg w-full sm:w-auto"
-            >
-              Log Workout for Today
-            </button>
-          ) : (
-            <button 
-              disabled
-              className="bg-surface-hover text-primary border border-primary/30 px-8 py-3 rounded-full font-semibold opacity-90 cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Workout Completed Today
-            </button>
-          )}
+      <section className="mt-10 lg:mt-20 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+        <Heatmap dates={workoutDates} onToggleDate={toggleWorkoutDate} />
+      </section>
+
+      <section className="mt-8 lg:mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+        <div className="bg-surface border border-border-subtle rounded-3xl p-6 sm:p-10 text-center">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase mb-8">
+            Your <span className="text-primary">Progress</span> Dashboard
+          </h2>
+
+          {/* 3-Stat Grid */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-6 mb-8">
+            {/* Streak */}
+            <div className="bg-surface-hover rounded-2xl p-4 sm:p-6 border border-border-subtle/50 flex flex-col items-center gap-1 sm:gap-2">
+              <div className="text-3xl sm:text-5xl font-black text-primary leading-none">{streak}</div>
+              <div className="text-[10px] sm:text-xs font-black text-white/40 uppercase tracking-widest">Day Streak</div>
+              <div className="text-lg sm:text-2xl mt-1">🔥</div>
+            </div>
+
+            {/* Total Workouts This Year */}
+            <div className="bg-surface-hover rounded-2xl p-4 sm:p-6 border border-border-subtle/50 flex flex-col items-center gap-1 sm:gap-2">
+              <div className="text-3xl sm:text-5xl font-black text-primary leading-none">
+                {workoutDates.filter(d => d.startsWith(new Date().getFullYear().toString())).length}
+              </div>
+              <div className="text-[10px] sm:text-xs font-black text-white/40 uppercase tracking-widest">Total {new Date().getFullYear()}</div>
+              <div className="text-lg sm:text-2xl mt-1">💪</div>
+            </div>
+
+            {/* This Month */}
+            <div className="bg-surface-hover rounded-2xl p-4 sm:p-6 border border-border-subtle/50 flex flex-col items-center gap-1 sm:gap-2">
+              <div className="text-3xl sm:text-5xl font-black text-primary leading-none">
+                {workoutDates.filter(d => {
+                  const now = new Date();
+                  const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                  return d.startsWith(monthStr);
+                }).length}
+              </div>
+              <div className="text-[10px] sm:text-xs font-black text-white/40 uppercase tracking-widest">
+                {new Date().toLocaleString('default', { month: 'short' })} Workouts
+              </div>
+              <div className="text-lg sm:text-2xl mt-1">📅</div>
+            </div>
+          </div>
+
+          <p className="text-text-muted text-sm sm:text-base max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed">
+            {streak > 0 
+              ? `${streak}-day streak and counting! The difference between who you are and who you want to be is what you do today.`
+              : `No active streak right now. Log a workout to ignite the fire!`}
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            {!hasLoggedToday ? (
+              <button 
+                onClick={logWorkoutForToday} 
+                className="bg-primary text-black px-8 py-3 rounded-full font-black text-sm uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-[0_4px_20px_rgba(194,255,0,0.4)] shadow-lg w-full sm:w-auto"
+              >
+                Log Workout for Today
+              </button>
+            ) : (
+              <button 
+                disabled
+                className="bg-surface-hover text-primary border border-primary/30 px-8 py-3 rounded-full font-black text-sm uppercase tracking-widest opacity-90 cursor-not-allowed flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Workout Completed Today
+              </button>
+            )}
+          </div>
         </div>
       </section>
     </main>

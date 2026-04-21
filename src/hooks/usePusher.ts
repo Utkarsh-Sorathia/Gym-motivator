@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as PusherPushNotifications from '@pusher/push-notifications-web';
 
 const PUSHER_INSTANCE_ID = process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID || '';
@@ -34,7 +34,7 @@ export function usePusher() {
     initPusher();
   }, []);
 
-  const subscribeToTopics = async (topics: string[]) => {
+  const subscribeToTopics = useCallback(async (topics: string[]) => {
     if (!beamsClient) {
       console.warn("Pusher Beams client not initialized yet.");
       return;
@@ -52,7 +52,7 @@ export function usePusher() {
     } catch (e) {
       console.warn('Could not subscribe to push topics (likely disabled by browser):', e);
     }
-  };
+  }, [beamsClient]);
 
   return { beamsClient, pushEnabled, subscribeToTopics };
 }

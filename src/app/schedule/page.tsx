@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import confetti from 'canvas-confetti';
 
 const WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -9,17 +10,17 @@ const SCHEDULE_DATA = {
   Monday: { 
     title: "Chest + Triceps", color: "text-red-500", 
     image: "/images/workouts/monday.avif",
-    exercises: ["Bench press", "Incline DB press", "High to low cable fly", "Cable fly / pec deck", "Overhead extension", "Pushdowns"] 
+    exercises: ["Bench press", "Incline DB press", "Decline Bench press / High to low cable fly", "Pec deck fly", "Pushdowns", "Single arm extension"] 
   },
   Tuesday: { 
     title: "Back + Biceps", color: "text-blue-500", 
     image: "/images/workouts/tuesday.avif",
-    exercises: ["Lat pulldown", "Seated cable rowing", "Lat pullovers", "T-bar rowing", "Cable curls", "Reverse cable curls"] 
+    exercises: ["T-bar rowing", "Lat pulldown", "Seated cable rowing", "Lat pullovers", "Cable curls", "Reverse cable curls"] 
   },
   Wednesday: { 
     title: "Shoulders + Abs", color: "text-yellow-500", 
     image: "/images/workouts/wednesday.avif",
-    exercises: ["DB press", "Lateral raises", "Upright rows", "Face pulls / reverse fly", "Shrugs", "Abs (crunches, plank)"] 
+    exercises: ["DB press", "Lateral raises", "Upright rows", "Face pulls / reverse fly", "Shrugs", "Abs (crunches, twist, plank)"] 
   },
   Thursday: { 
     title: "Legs", color: "text-green-500", 
@@ -29,12 +30,12 @@ const SCHEDULE_DATA = {
   Friday: { 
     title: "Arms", color: "text-primary", 
     image: "/images/workouts/friday.avif",
-    exercises: ["Cable curls", "Hammer curls", "Triceps extensions", "Pushdowns", "Forearms"] 
+    exercises: ["Barbell curls", "Cable curls", "Hammer curls", "Triceps overhead extensions", "Pushdowns(overhand, underhand)", "Forearms(wrist curls)"] 
   },
   Saturday: { 
     title: "Upper Pump + Abs", color: "text-orange-500", 
     image: "/images/workouts/saturday.avif",
-    exercises: ["Machine chest press", "Cable fly", "Pec deck", "Lateral raises", "Rear delts", "Abs"] 
+    exercises: ["High to low cable fly", "chest level cable fly", "Low to high cable fly", "Cable lateral raises", "Face pulls", "Abs (crunches, twist, plank)"] 
   },
   Sunday: { 
     title: "Rest", color: "text-slate-400", 
@@ -86,6 +87,14 @@ export default function SchedulePage() {
       setWorkoutDates(newDates);
       window.localStorage.setItem('gym_workout_dates', JSON.stringify(newDates));
       checkIfLoggedToday(newDates);
+
+      // Trigger celebration!
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#c2ff00', '#ffffff', '#00e676']
+      });
     }
   };
 
